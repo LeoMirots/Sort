@@ -107,6 +107,39 @@ void quickSort(numbers *v, size_t first, size_t last)
 }
 
 /*Variante del quickSort che divide i vettori sempre a metà e ottenendo dei vettori di dimensioni più simmetriche possibile;*/
+void merge(numbers v[], size_t first1, size_t first2, size_t last)
+{
+	numbers *vout = malloc(sizeof(numbers)*100); /* Vettore temporaneo;*/
+	size_t i = first1, j = first2, k = first1;
+
+	while (i <= first2 - 1 && j <= last) /*Copio ordinatamente gli elementi del primo e del secondo vettore nel vettore temporaneo vout;*/
+	{
+		if (v[i] < v[j])
+			vout[k] = v[i++];
+		else
+			vout[k] = v[j++];
+		++k;
+	}
+
+	while (i <= first2 - 1)	/* Completo il vettore temporaneo con gli elementi del primo O del secondo che sono rimasti indietro;*/
+	{
+		vout[k] = v[i];
+		++i;
+		++k;
+	}
+	while (j <= last)	/* Possono essere rimasti solo elementi O del primo OPPURE del secondo, non entrambi;*/
+	{
+		vout[k] = v[j];
+		++j;
+		++k;
+	}
+
+	for (i = first1; i <= last; ++i) /*Una volta completato il vettore temporaneo lo copio nel vettore che volevo ordinare;*/
+		v[i] = vout[i];
+	
+	free(vout); /* Libero la memoria occupata dal vettore temporaneo;*/
+}
+
 void mergeSort(numbers *v, size_t first, size_t last)
 {
 	if (v == NULL)
@@ -117,29 +150,6 @@ void mergeSort(numbers *v, size_t first, size_t last)
 		mid = (last + first) / 2;
 		mergeSort(v, first, mid);
 		mergeSort(v, mid + 1, last);
+		merge(v, first, mid + 1, last);
 	}
-
-	//	numbers *vout = malloc(sizeof(numbers)); /* vout: vettore temporaneo;*/
-	numbers vout[100]; /*vettore temporaneo*/
-	size_t i = first, j = mid + 1, k = first;
-	while (i <= mid && j <= last)
-	{
-		if (v[i] < v[j])
-			vout[k] = v[i++];
-		else
-			vout[k] = v[j++];
-		++k;
-	}
-	while (i <= mid)
-	{
-		vout[k] = v[i++];
-		++k;
-	}
-	while (j <= last)
-	{
-		vout[k] = v[j++];
-		++k;
-	}
-	for (i = first; i <= last; ++i)
-		v[i] = vout[i];
 }
